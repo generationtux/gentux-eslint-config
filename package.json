@@ -1,0 +1,23 @@
+{
+  "name": "@gentux/eslint-config",
+  "version": "1.1.0",
+  "description": "Eslint config for Generation Tux projects.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "url": "git@github.com:generationtux/gentux-eslint-config.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "babel-eslint": "^8.2.2",
+    "eslint": "^4.18.1",
+    "eslint-config-react-app": "^2.1.0",
+    "eslint-plugin-flowtype": "^2.46.1",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-react": "^7.7.0"
+  }
+}
