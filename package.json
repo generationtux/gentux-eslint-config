@@ -1,5 +1,5 @@
 {
-  "name": "@gentux/eslint-config",
+  "name": "@generationtux/eslint-config",
   "version": "1.0.0",
   "description": "Eslint config for Generation Tux projects.",
   "main": "index.js",
