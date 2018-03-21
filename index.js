@@ -1,6 +1,9 @@
 module.exports = {
   extends: "react-app",
   plugins: ["jsx-a11y"],
+  rules: {
+    "no-console": 1
+  },
   overrides: {
     files: ["**/*.ts", "**/*.tsx"],
     parser: "typescript-eslint-parser",
