@@ -1,6 +1,6 @@
 {
   "name": "@generationtux/eslint-config",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Eslint config for Generation Tux projects.",
   "main": "index.js",
   "scripts": {
