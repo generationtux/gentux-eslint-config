@@ -3,7 +3,6 @@ module.exports = {
   plugins: ["jsx-a11y", "react"],
   rules: {
     "no-console": 1,
-    quotes: [2, "single"],
     "react/no-access-state-in-setstate": "error",
     "react/no-redundant-should-component-update": "error",
     "react/no-direct-mutation-state": "error",
