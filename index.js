@@ -7,7 +7,8 @@ module.exports = {
     "react/no-redundant-should-component-update": "error",
     "react/no-direct-mutation-state": "error",
     "react/no-typos": "error",
-    "react/no-unused-state": "error"
+    "react/no-unused-state": "error",
+    "jsx-a11y/href-no-hash": [0] // temp workaround
   },
   overrides: {
     files: ["**/*.ts", "**/*.tsx"],
