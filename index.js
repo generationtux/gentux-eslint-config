@@ -10,12 +10,12 @@ module.exports = {
     "react/no-unused-state": "error",
     "jsx-a11y/href-no-hash": [0] // temp workaround
   },
-  overrides: {
+  overrides: [{
     files: ["**/*.ts", "**/*.tsx"],
-    parser: "typescript-eslint/parser",
+    parser: "@typescript-eslint/parser",
     rules: {
       "no-unused-vars": [0],
       "no-undef": [0]
     }
-  }
+  }]
 };
