@@ -15,7 +15,7 @@ yarn add -D @generationtux/eslint-config
 2. Create an `eslint.config.mjs` file in your project root:
 
 ```javascript
-import gentuxConfig from "@generationtux/eslint-config";
+import gentuxConfig from '@generationtux/eslint-config';
 
 export default gentuxConfig;
 ```
@@ -27,6 +27,7 @@ export default gentuxConfig;
 - **BREAKING**: Requires ESLint 9
 - **BREAKING**: Migrated to new ESLint flat config system
 - **BREAKING**: Now requires `eslint.config.mjs` instead of `.eslintrc`
+- **BREAKING**: Ported to ES module
 - Updated all dependencies to their latest versions
 - Removed TypeScript version upper bound restriction
 

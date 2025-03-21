@@ -1,4 +1,4 @@
-import gentuxConfig from "@generationtux/eslint-config";
+import gentuxConfig from '@generationtux/eslint-config';
 
 export default [
   ...gentuxConfig,
