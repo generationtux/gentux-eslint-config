@@ -1,9 +1,9 @@
-import { describe, it } from "node:test";
-import assert from "node:assert";
-import { ESLint } from "eslint";
-import type { Linter } from "eslint";
+import { describe, it } from 'node:test';
+import assert from 'node:assert';
+import { ESLint } from 'eslint';
+import type { Linter } from 'eslint';
 
-import config from "../eslint.config.mjs";
+import config from '../eslint.config.mjs';
 
 /**
  * Helper to serialize config for comparison
@@ -15,21 +15,17 @@ function serializeConfig(config: Linter.Config[]): unknown[] {
 
     // Copy primitive values and arrays
     for (const [key, value] of Object.entries(item)) {
-      if (key === "plugins" && value && typeof value === "object") {
+      if (key === 'plugins' && value && typeof value === 'object') {
         serialized.plugins = Object.keys(value).sort();
-      } else if (
-        key === "languageOptions" &&
-        value &&
-        typeof value === "object"
-      ) {
+      } else if (key === 'languageOptions' && value && typeof value === 'object') {
         const langOpts = value as Record<string, unknown>;
         serialized.languageOptions = {
           ...langOpts,
-          parser: langOpts.parser ? "<TypeScript Parser>" : undefined,
+          parser: langOpts.parser ? '<TypeScript Parser>' : undefined,
         };
-      } else if (typeof value === "function") {
-        serialized[key] = "<Function>";
-      } else if (value && typeof value === "object" && !Array.isArray(value)) {
+      } else if (typeof value === 'function') {
+        serialized[key] = '<Function>';
+      } else if (value && typeof value === 'object' && !Array.isArray(value)) {
         serialized[key] = JSON.parse(JSON.stringify(value));
       } else {
         serialized[key] = value;
@@ -40,19 +36,13 @@ function serializeConfig(config: Linter.Config[]): unknown[] {
   });
 }
 
-describe("ESLint Config Structure", () => {
-  it("should match expected config structure", () => {
+describe('ESLint Config Structure', () => {
+  it('should match expected config structure', () => {
     const expectedConfig = [
-      "SKIP_FIRST_ENTRY",
+      'SKIP_FIRST_ENTRY',
       {
-        files: ["**/*.{js,jsx,ts,tsx}"],
-        plugins: [
-          "@typescript-eslint",
-          "import",
-          "jsx-a11y",
-          "react",
-          "react-hooks",
-        ].sort(),
+        files: ['**/*.{js,jsx,ts,tsx}'],
+        plugins: ['@typescript-eslint', 'import', 'jsx-a11y', 'react', 'react-hooks'].sort(),
         languageOptions: {
           globals: {
             console: true,
@@ -74,73 +64,66 @@ describe("ESLint Config Structure", () => {
             test: true,
             vi: true, // Vitest
           },
-          parser: "<TypeScript Parser>",
+          parser: '<TypeScript Parser>',
           parserOptions: {
             ecmaFeatures: {
               jsx: true,
             },
-            ecmaVersion: "latest",
-            sourceType: "module",
+            ecmaVersion: 'latest',
+            sourceType: 'module',
           },
         },
         settings: {
-          "import/resolver": {
+          'import/resolver': {
             typescript: {
               alwaysTryTypes: true,
             },
           },
           react: {
-            version: "detect",
+            version: 'detect',
           },
         },
         rules: {
-          "@typescript-eslint/ban-ts-comment": "off",
-          "@typescript-eslint/no-non-null-assertion": "off",
-          "@typescript-eslint/no-use-before-define": "error",
-          "jsx-a11y/href-no-hash": "off",
-          "no-console": "warn",
-          "no-prototype-builtins": "off",
-          "no-useless-escape": "off",
-          "react-hooks/exhaustive-deps": "warn",
-          "react-hooks/rules-of-hooks": "error",
-          "react/no-access-state-in-setstate": "error",
-          "react/no-direct-mutation-state": "error",
-          "react/no-redundant-should-component-update": "error",
-          "react/no-typos": "error",
-          "react/no-unused-state": "warn",
+          '@typescript-eslint/ban-ts-comment': 'off',
+          '@typescript-eslint/no-non-null-assertion': 'off',
+          '@typescript-eslint/no-use-before-define': 'error',
+          'jsx-a11y/href-no-hash': 'off',
+          'no-console': 'warn',
+          'no-prototype-builtins': 'off',
+          'no-useless-escape': 'off',
+          'react-hooks/exhaustive-deps': 'warn',
+          'react-hooks/rules-of-hooks': 'error',
+          'react/no-access-state-in-setstate': 'error',
+          'react/no-direct-mutation-state': 'error',
+          'react/no-redundant-should-component-update': 'error',
+          'react/no-typos': 'error',
+          'react/no-unused-state': 'warn',
         },
       },
       // TypeScript-specific overrides
       {
-        files: ["**/*.ts", "**/*.tsx"],
+        files: ['**/*.ts', '**/*.tsx'],
         rules: {
-          "no-unused-vars": "off",
-          "no-undef": "off",
+          'no-unused-vars': 'off',
+          'no-undef': 'off',
         },
       },
       {
-        ignores: [".next/**", "node_modules/**", "dist/**", "coverage/**"],
+        ignores: ['.next/**', 'node_modules/**', 'dist/**', 'coverage/**'],
       },
     ];
 
     const serialized = serializeConfig(config);
 
-    assert.strictEqual(
-      serialized.length,
-      expectedConfig.length,
-      `Config should have ${expectedConfig.length} entries`
-    );
+    assert.strictEqual(serialized.length, expectedConfig.length, `Config should have ${expectedConfig.length} entries`);
 
     for (let i = 0; i < expectedConfig.length; i++) {
       const actual = serialized[i] as Record<string, unknown>;
       const expected = expectedConfig[i];
 
       // Special handling for first entry (eslint.configs.recommended)
-      if (i === 0 || expected === "SKIP_FIRST_ENTRY") {
-        assert.ok(
-          actual.rules,
-          "First config should have rules from @eslint/js"
-        );
+      if (i === 0 || expected === 'SKIP_FIRST_ENTRY') {
+        assert.ok(actual.rules, 'First config should have rules from @eslint/js');
         continue;
       }
 
@@ -155,14 +138,14 @@ describe("ESLint Config Structure", () => {
     }
   });
 
-  it("should export an array", () => {
-    assert.ok(Array.isArray(config), "Config should be an array");
-    assert.strictEqual(config.length, 4, "Config should have 4 entries");
+  it('should export an array', () => {
+    assert.ok(Array.isArray(config), 'Config should be an array');
+    assert.strictEqual(config.length, 4, 'Config should have 4 entries');
   });
 });
 
-describe("ESLint Integration - React Hooks v7", () => {
-  it("should successfully lint valid TypeScript React code with hooks", async () => {
+describe('ESLint Integration - React Hooks v7', () => {
+  it('should successfully lint valid TypeScript React code with hooks', async () => {
     const eslint = new ESLint({
       overrideConfigFile: true,
       overrideConfig: config as Linter.Config[],
@@ -191,21 +174,13 @@ export const Counter = ({ initialCount }: Props): React.ReactNode => {
 };
 `;
 
-    const results = await eslint.lintText(code, { filePath: "test.tsx" });
+    const results = await eslint.lintText(code, { filePath: 'test.tsx' });
     const errors = results[0].messages.filter((m) => m.severity === 2);
 
-    assert.strictEqual(
-      errors.length,
-      0,
-      `Valid hooks code should have no errors, but got:\n${JSON.stringify(
-        errors,
-        null,
-        2
-      )}`
-    );
+    assert.strictEqual(errors.length, 0, `Valid hooks code should have no errors, but got:\n${JSON.stringify(errors, null, 2)}`);
   });
 
-  it("should catch rules-of-hooks violations (conditional hooks)", async () => {
+  it('should catch rules-of-hooks violations (conditional hooks)', async () => {
     const eslint = new ESLint({
       overrideConfigFile: true,
       overrideConfig: config as Linter.Config[],
@@ -224,25 +199,17 @@ export const BadComponent = ({ condition }: { condition: boolean }) => {
 `;
 
     const results = await eslint.lintText(conditionalHookCode, {
-      filePath: "test.tsx",
+      filePath: 'test.tsx',
     });
 
     const errors = results[0].messages.filter((m) => m.severity === 2);
-    const hookError = errors.find(
-      (e) => e.ruleId === "react-hooks/rules-of-hooks"
-    );
+    const hookError = errors.find((e) => e.ruleId === 'react-hooks/rules-of-hooks');
 
-    assert.ok(
-      hookError,
-      "Should catch conditional hook violation with rules-of-hooks rule"
-    );
-    assert.ok(
-      hookError.message.toLowerCase().includes("hook"),
-      "Error message should mention hooks"
-    );
+    assert.ok(hookError, 'Should catch conditional hook violation with rules-of-hooks rule');
+    assert.ok(hookError.message.toLowerCase().includes('hook'), 'Error message should mention hooks');
   });
 
-  it("should catch exhaustive-deps violations (missing dependencies)", async () => {
+  it('should catch exhaustive-deps violations (missing dependencies)', async () => {
     const eslint = new ESLint({
       overrideConfigFile: true,
       overrideConfig: config as Linter.Config[],
@@ -263,21 +230,16 @@ export const Component = () => {
 `;
 
     const results = await eslint.lintText(missingDepsCode, {
-      filePath: "test.tsx",
+      filePath: 'test.tsx',
     });
 
     const warnings = results[0].messages.filter((m) => m.severity === 1);
-    const depsWarning = warnings.find(
-      (w) => w.ruleId === "react-hooks/exhaustive-deps"
-    );
+    const depsWarning = warnings.find((w) => w.ruleId === 'react-hooks/exhaustive-deps');
 
-    assert.ok(
-      depsWarning,
-      "Should warn about missing dependencies with exhaustive-deps rule"
-    );
+    assert.ok(depsWarning, 'Should warn about missing dependencies with exhaustive-deps rule');
   });
 
-  it("should catch TypeScript errors (use-before-define)", async () => {
+  it('should catch TypeScript errors (use-before-define)', async () => {
     const eslint = new ESLint({
       overrideConfigFile: true,
       overrideConfig: config as Linter.Config[],
@@ -293,37 +255,21 @@ const Component = () => {
 };
 `;
 
-    const results = await eslint.lintText(code, { filePath: "test.tsx" });
+    const results = await eslint.lintText(code, { filePath: 'test.tsx' });
     const errors = results[0].messages.filter((m) => m.severity === 2);
 
-    assert.ok(errors.length > 0, "Should catch use-before-define error");
+    assert.ok(errors.length > 0, 'Should catch use-before-define error');
   });
 
-  it("should respect ignore patterns", async () => {
+  it('should respect ignore patterns', async () => {
     const eslint = new ESLint({
       overrideConfigFile: true,
       overrideConfig: config as Linter.Config[],
     });
 
-    assert.strictEqual(
-      await eslint.isPathIgnored("node_modules/test.js"),
-      true,
-      "Should ignore node_modules"
-    );
-    assert.strictEqual(
-      await eslint.isPathIgnored(".next/test.js"),
-      true,
-      "Should ignore .next"
-    );
-    assert.strictEqual(
-      await eslint.isPathIgnored("dist/test.js"),
-      true,
-      "Should ignore dist"
-    );
-    assert.strictEqual(
-      await eslint.isPathIgnored("src/test.tsx"),
-      false,
-      "Should not ignore src files"
-    );
+    assert.strictEqual(await eslint.isPathIgnored('node_modules/test.js'), true, 'Should ignore node_modules');
+    assert.strictEqual(await eslint.isPathIgnored('.next/test.js'), true, 'Should ignore .next');
+    assert.strictEqual(await eslint.isPathIgnored('dist/test.js'), true, 'Should ignore dist');
+    assert.strictEqual(await eslint.isPathIgnored('src/test.tsx'), false, 'Should not ignore src files');
   });
 });
