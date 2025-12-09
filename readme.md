@@ -17,7 +17,7 @@ yarn add -D @generationtux/eslint-config
 2. Create an `eslint.config.mjs` file in your project root:
 
 ```javascript
-import gentuxConfig from "@generationtux/eslint-config";
+import gentuxConfig from '@generationtux/eslint-config';
 
 export default [
   ...gentuxConfig,
@@ -33,6 +33,10 @@ yarn publish
 ```
 
 ## Changelog
+
+### Version 4.1.1
+
+- Optimized CI workflows to avoid duplicate test runs on merge
 
 ### Version 4.1.0
 
