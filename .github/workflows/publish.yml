@@ -29,13 +29,14 @@ jobs:
       - name: Run tests
         run: yarn test
 
-      # Trusted publishing needs npm >= 11.5.1, which requires a newer Node than
-      # the version this package targets. Publish on its own toolchain so the
-      # tests above keep running against .nvmrc. Node 24 bundles npm 11.6.x.
+      # Staged publishing needs npm >= 11.15.0 (OIDC alone only needs 11.5.1),
+      # which requires a newer Node than the version this package targets.
+      # Publish on its own toolchain so the tests above keep running against
+      # .nvmrc. Node 24.18 bundles npm 11.16.x.
       - name: Setup Node.js for publishing
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: '24.18'
           registry-url: 'https://registry.npmjs.org'
 
       # setup-node writes `_authToken=${NODE_AUTH_TOKEN}` into .npmrc even when no
@@ -45,8 +46,12 @@ jobs:
       - name: Drop empty authToken so npm uses OIDC
         run: sed -i '/_authToken/d' "${NPM_CONFIG_USERCONFIG:-$HOME/.npmrc}"
 
+      # `stage publish` uploads to npm's staging queue instead of going live: the
+      # version is not installable until someone runs `npm stage approve <id>`
+      # with 2FA. Provenance is generated at stage time and carries over on
+      # approval. Swap to `npm publish` once you want releases to be automatic.
       # npm swallows OIDC failures at default log level (they log at verbose/silly
       # and return undefined), so a misconfigured trusted publisher surfaces only
-      # as a bare ENEEDAUTH. Safe to drop once the path is proven.
-      - name: Publish to npm
-        run: npm publish --provenance --loglevel verbose
+      # as a bare ENEEDAUTH. Safe to drop later.
+      - name: Stage publish to npm
+        run: npm stage publish --provenance --loglevel verbose
