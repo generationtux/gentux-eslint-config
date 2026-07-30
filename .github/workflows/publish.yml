@@ -45,5 +45,8 @@ jobs:
       - name: Drop empty authToken so npm uses OIDC
         run: sed -i '/_authToken/d' "${NPM_CONFIG_USERCONFIG:-$HOME/.npmrc}"
 
+      # npm swallows OIDC failures at default log level (they log at verbose/silly
+      # and return undefined), so a misconfigured trusted publisher surfaces only
+      # as a bare ENEEDAUTH. Safe to drop once the path is proven.
       - name: Publish to npm
-        run: npm publish --provenance
+        run: npm publish --provenance --loglevel verbose

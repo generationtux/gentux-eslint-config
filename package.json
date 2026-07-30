@@ -9,7 +9,8 @@
     "test": "tsx --test test/config.test.ts"
   },
   "repository": {
-    "url": "git@github.com:generationtux/gentux-eslint-config.git"
+    "type": "git",
+    "url": "git+https://github.com/generationtux/gentux-eslint-config.git"
   },
   "license": "ISC",
   "files": [
