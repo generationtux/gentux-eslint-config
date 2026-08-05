@@ -48,10 +48,18 @@ jobs:
 
       # `stage publish` uploads to npm's staging queue instead of going live: the
       # version is not installable until someone runs `npm stage approve <id>`
-      # with 2FA. Provenance is generated at stage time and carries over on
-      # approval. Swap to `npm publish` once you want releases to be automatic.
+      # interactively with 2FA (approval cannot use OIDC).
+      #
+      # No --provenance flag: with trusted publishing npm generates provenance
+      # automatically, and passing the flag explicitly skips npm's own repo/package
+      # visibility check, turning a graceful skip into a hard EUSAGE failure.
+      #
+      # To make releases automatic later, swap to `npm publish` AND add
+      # `npm publish` to this package's Allowed actions on npmjs.com — changing
+      # only the command here fails with a bare auth error.
+      #
       # npm swallows OIDC failures at default log level (they log at verbose/silly
       # and return undefined), so a misconfigured trusted publisher surfaces only
       # as a bare ENEEDAUTH. Safe to drop later.
       - name: Stage publish to npm
-        run: npm stage publish --provenance --loglevel verbose
+        run: npm stage publish --loglevel verbose
