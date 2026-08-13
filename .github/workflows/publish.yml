@@ -23,6 +23,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Do not add registry-url: OIDC does not use it and it breaks `yarn install`.
       # No dependency caching in a job that publishes: a poisoned cache could
       # expose the OIDC token to attacker-controlled code (setup-node OIDC docs).
       - name: Setup Node.js
