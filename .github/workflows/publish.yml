@@ -17,9 +17,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # .nvmrc pins Node 24, which bundles the npm >= 11.5.1 that trusted
-      # publishing requires.
-      #
       # No dependency caching in a job that publishes: a poisoned cache could
       # expose the OIDC token to attacker-controlled code (setup-node OIDC docs).
       - name: Setup Node.js
