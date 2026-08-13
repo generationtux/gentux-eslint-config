@@ -32,10 +32,6 @@ jobs:
       # Trusted publishing needs npm >= 11.5.1, which requires a newer Node than
       # the version this package targets. Publish on its own toolchain so the
       # tests above keep running against .nvmrc. Node 24.18 bundles npm 11.16.x.
-      # v7 or newer is required: v4-v6 export a dummy NODE_AUTH_TOKEN placeholder
-      # that npm sends to the registry, breaking the OIDC publish
-      # (actions/setup-node#1551, fixed by PR #1558).
-      #
       # package-manager-cache: false per setup-node's own OIDC guidance — a poisoned
       # cache could expose the OIDC token to attacker-controlled code.
       - name: Setup Node.js for publishing
