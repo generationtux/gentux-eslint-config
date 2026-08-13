@@ -17,13 +17,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # No registry-url on purpose. It only exists to write an
+      # `_authToken=${NODE_AUTH_TOKEN}` line into .npmrc, which OIDC does not use —
+      # and since setup-node v7 stopped exporting a dummy NODE_AUTH_TOKEN, Yarn
+      # Classic hard-fails on the unresolvable variable ("Failed to replace env in
+      # config"). npm publishes to registry.npmjs.org by default anyway.
+      #
       # No dependency caching in a job that publishes: a poisoned cache could
       # expose the OIDC token to attacker-controlled code (setup-node OIDC docs).
       - name: Setup Node.js
         uses: actions/setup-node@v7
         with:
           node-version-file: '.nvmrc'
-          registry-url: 'https://registry.npmjs.org'
           package-manager-cache: false
 
       - name: Install dependencies
@@ -41,6 +46,7 @@ jobs:
       #
       # npm swallows OIDC failures at default log level (they log at verbose/silly
       # and return undefined), so a misconfigured trusted publisher surfaces only
-      # as a bare ENEEDAUTH. Safe to drop once the path is proven.
+      # as a bare auth error -- ENEEDAUTH, or E404 when the publisher identity
+      # (owner/repo/workflow/environment) does not match. Safe to drop once proven.
       - name: Publish to npm
         run: npm publish --loglevel verbose
