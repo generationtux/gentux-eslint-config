@@ -38,16 +38,19 @@ jobs:
           node-version: '24.18'
           registry-url: 'https://registry.npmjs.org'
 
-      # setup-node writes `_authToken=${NODE_AUTH_TOKEN}` into .npmrc even when no
-      # token is supplied. npm reads the empty value as "auth already configured",
-      # skips the OIDC exchange and fails with ENEEDAUTH.
-      # https://github.com/actions/setup-node/issues/1551
-      - name: Drop empty authToken so npm uses OIDC
-        run: sed -i '/_authToken/d' "${NPM_CONFIG_USERCONFIG:-$HOME/.npmrc}"
+      # setup-node v4-v6 write `_authToken=${NODE_AUTH_TOKEN}` into .npmrc and, when
+      # no token is supplied, export NODE_AUTH_TOKEN as the dummy placeholder
+      # `XXXXX-XXXXX-XXXXX-XXXXX`. npm then sends that placeholder to the registry
+      # and the OIDC publish fails. Fixed in v7 (actions/setup-node#1551, PR #1558),
+      # so this step can be deleted when the action is upgraded.
+      - name: Drop placeholder authToken so npm uses OIDC
+        run: |
+          f="${NPM_CONFIG_USERCONFIG:-$HOME/.npmrc}"
+          if [ -f "$f" ]; then sed -i '/_authToken/d' "$f"; fi
 
-      # No --provenance flag: with trusted publishing npm generates provenance
-      # automatically, and passing the flag explicitly skips npm's own repo/package
-      # visibility check, turning a graceful skip into a hard EUSAGE failure.
+      # No --provenance flag: after a successful OIDC exchange npm auto-enables
+      # provenance for public packages in public repos (lib/utils/oidc.js), so the
+      # flag is redundant here.
       #
       # The trusted publisher on npmjs.com must have `npm publish` in its Allowed
       # actions, or this fails with a bare auth error.
