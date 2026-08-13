@@ -17,29 +17,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # .nvmrc pins Node 24, which bundles the npm >= 11.5.1 that trusted
+      # publishing requires.
+      #
+      # No dependency caching in a job that publishes: a poisoned cache could
+      # expose the OIDC token to attacker-controlled code (setup-node OIDC docs).
       - name: Setup Node.js
         uses: actions/setup-node@v7
         with:
           node-version-file: '.nvmrc'
-          cache: 'yarn'
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
       - name: Run tests
         run: yarn test
-
-      # Trusted publishing needs npm >= 11.5.1, which requires a newer Node than
-      # the version this package targets. Publish on its own toolchain so the
-      # tests above keep running against .nvmrc. Node 24.18 bundles npm 11.16.x.
-      # package-manager-cache: false per setup-node's own OIDC guidance — a poisoned
-      # cache could expose the OIDC token to attacker-controlled code.
-      - name: Setup Node.js for publishing
-        uses: actions/setup-node@v7
-        with:
-          node-version: '24.18'
-          registry-url: 'https://registry.npmjs.org'
-          package-manager-cache: false
 
       # No --provenance flag: after a successful OIDC exchange npm auto-enables
       # provenance for public packages in public repos (lib/utils/oidc.js), so the
