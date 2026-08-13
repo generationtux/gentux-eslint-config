@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version-file: '.nvmrc'
           cache: 'yarn'
@@ -32,21 +32,18 @@ jobs:
       # Trusted publishing needs npm >= 11.5.1, which requires a newer Node than
       # the version this package targets. Publish on its own toolchain so the
       # tests above keep running against .nvmrc. Node 24.18 bundles npm 11.16.x.
+      # v7 or newer is required: v4-v6 export a dummy NODE_AUTH_TOKEN placeholder
+      # that npm sends to the registry, breaking the OIDC publish
+      # (actions/setup-node#1551, fixed by PR #1558).
+      #
+      # package-manager-cache: false per setup-node's own OIDC guidance — a poisoned
+      # cache could expose the OIDC token to attacker-controlled code.
       - name: Setup Node.js for publishing
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: '24.18'
           registry-url: 'https://registry.npmjs.org'
-
-      # setup-node v4-v6 write `_authToken=${NODE_AUTH_TOKEN}` into .npmrc and, when
-      # no token is supplied, export NODE_AUTH_TOKEN as the dummy placeholder
-      # `XXXXX-XXXXX-XXXXX-XXXXX`. npm then sends that placeholder to the registry
-      # and the OIDC publish fails. Fixed in v7 (actions/setup-node#1551, PR #1558),
-      # so this step can be deleted when the action is upgraded.
-      - name: Drop placeholder authToken so npm uses OIDC
-        run: |
-          f="${NPM_CONFIG_USERCONFIG:-$HOME/.npmrc}"
-          if [ -f "$f" ]; then sed -i '/_authToken/d' "$f"; fi
+          package-manager-cache: false
 
       # No --provenance flag: after a successful OIDC exchange npm auto-enables
       # provenance for public packages in public repos (lib/utils/oidc.js), so the
