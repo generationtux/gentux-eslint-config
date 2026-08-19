@@ -27,12 +27,16 @@ export default [
 
 ## Release
 
-```bash
-yarn login
-yarn publish
-```
+Bump the version in `package.json` and merge to `master`. CI publishes to npm via
+trusted publishing (OIDC) — there is no token to log in with, and publishing from
+a laptop will not work.
 
 ## Changelog
+
+### Version 4.1.2
+
+- Publish via npm trusted publishing (OIDC) instead of a stored token
+- Bumped CI to Node 24
 
 ### Version 4.1.1
 
